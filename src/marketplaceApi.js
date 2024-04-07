@@ -13,14 +13,13 @@ export class PublicMarketplaceApi {
             "mailCode": mailCode,
             "adminSecret": adminSecret
         })
-
-        console.log(payload)
+ 
         return fetch(`${MARKET_PLACE_ENDPOINT}/account/register`, {
             method: "POST",
-            mode: 'no-cors',
-            body: "hello world  fucking server fuck you",
+            body: payload,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }
         })
     }

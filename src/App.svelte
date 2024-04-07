@@ -19,8 +19,9 @@
 			mailCode,
 			adminSecret,
 		)
-			.catch((it) => console.log(it))
-			.then((it) => console.log(it));
+			.catch(it => console.error(it))
+			.then(it => it.json())
+			.then(it => console.log(it))
 	}
 </script>
 
