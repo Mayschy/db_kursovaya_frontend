@@ -155,6 +155,50 @@ export class PriveteMarketplaceApi {
         return this.client.get(`/order/calculate`, registerRequest)
     }
 
+    static createFavoriteList(registerRequest) {
+        return this.client.post(`/favlist/create`, registerRequest)
+    }
 
+    static deleteFavoriteList(listId) {
+        return this.client.post(`/favlist/delete`, qs.stringify({
+            "listId": listId
+        }))
+    }
 
+    static changeFavoriteListVisibility(listId, isPublic) {
+        return this.client.post(`/favlist/change_visibility`, qs.stringify({
+            "listId": listId,
+            "isPublic": isPublic
+        }))
+    }
+
+    static addProductToFavoriteList(listId, productId) {
+        return this.client.post(`/favlist/add_product`, qs.stringify({
+            "listId": listId,
+            "productId": productId
+        }))
+    }
+
+    static removeProductFromFavoriteList(listId, productId) {
+        return this.client.post(`/favlist/remove_product`, qs.stringify({
+            "listId": listId,
+            "productId": productId
+        }))
+    }
+
+    static getMyFavoriteLists() {
+        return this.client.get(`/favlist/get_my`)
+    }
+
+    static getPublicFavoriteList(listId) {
+        return this.client.get(`/favlist/get_public`, qs.stringify({
+            "listId": listId
+        }))
+    }
+    
+    static getUserPublicFavoriteLists(accountId) {
+        return this.client.get(`/favlist/find_account_public_lists`, qs.stringify({
+            "accountId": accountId
+        }))
+    }
 }
