@@ -1,10 +1,14 @@
+import axios from "axios"
+import qs from "qs"
 
 const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080"
+const marketplaceClient = axios.create({
+    baseURL: MARKET_PLACE_ENDPOINT,
+})
 
 export class PublicMarketplaceApi {
     static register(username, firstname, lastname, password, role, mailCode, adminSecret) {
-
-        const payload = JSON.stringify({
+        const payload = {
             "username": username,
             "firstname": firstname,
             "lastname": lastname,
@@ -12,76 +16,96 @@ export class PublicMarketplaceApi {
             "role": role,
             "mailCode": mailCode,
             "adminSecret": adminSecret
-        })
- 
-        return fetch(`${MARKET_PLACE_ENDPOINT}/account/register`, {
-            method: "POST",
-            body: payload,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        })
+        }
+
+        return marketplaceClient.post(`/account/register`, payload)
+    }
+
+    static sendEmailCode(email) {
+        return marketplaceClient.post(`/account/send_email_code`, qs.stringify({
+            "email": email
+        }))
     }
 }
 
 export class PriveteMarketplaceApi {
     static authHeaders
+    static client
 
     static initCreditans(username, password) {
         this.authHeaders = new Headers()
         this.authHeaders.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
+        this.client = axios.create({
+            baseURL: MARKET_PLACE_ENDPOINT,
+            headers: this.authHeaders
+        })
     }
 
     static getMe() {
-        return fetch(`${MARKET_PLACE_ENDPOINT}/account/get_me`, {
-            headers: authHeaders
-        })
+        return authenitcatedClient.get(`/account/get_me`)
     }
 
     static addShippingAddress(shippingAddress) {
-        const params = new URLSearchParams({
+        return authenitcatedClient.post(`${MARKET_PLACE_ENDPOINT}/account/add_shipping_address`, qs.stringify({
             "shippingAddress": shippingAddress
-        }).toString()
-        return fetch(`${MARKET_PLACE_ENDPOINT}/account/add_shipping_address?${params}`, {
-            headers: this.authHeaders
-        })
+        }))
     }
 
     static removeShippingAddress(shippingAddress) {
-        const params = new URLSearchParams({
+        return authenitcatedClient.post(`${MARKET_PLACE_ENDPOINT}/account/remove_shipping_address`, qs.stringify({
             "shippingAddress": shippingAddress
-        }).toString()
-        return fetch(`${MARKET_PLACE_ENDPOINT}/account/remove_shipping_address?${params}`, {
-            headers: this.authHeaders
-        })
-    }
-
-    static sendEmailCode(email) {
-        const params = new URLSearchParams({
-            "email": email
-        }).toString()
-        return fetch(`${MARKET_PLACE_ENDPOINT}/account/send_email_code?${params}`, {
-            headers: this.authHeaders
-        })
+        }))
     }
 
     static registerCategory(registerRequest) {
-        return fetch(`${MARKET_PLACE_ENDPOINT}/category/register`, {
-            headers: this.authHeaders,
-            method: "POST",
-            body: JSON.stringify(registerRequest)
-        })
+        return authenitcatedClient.post(`/category/register`, registerRequest)
     }
 
     static findCategory(query, page, pageSize) {
-        const params = new URLSearchParams({
+        return authenitcatedClient.get(`/category/find`, qs.stringify({
             "query": query,
             "page": page,
             "pageSize": pageSize
-        }).toString()
-        return fetch(`${MARKET_PLACE_ENDPOINT}/category/find?${params}`, {
-            headers: this.authHeaders,
-        })
+        }))
     }
+
+    static listCategory(page, pageSize) {
+        return this.client.get(`/category/list`, qs.stringify({
+            "page": page,
+            "pageSize": pageSize
+        }))
+    }
+
+    static countCategories() {
+        return this.client.get(`/category/count`)
+    }
+
+    static registerProduct(registerRequest) {
+        return this.client.post(`/product/register`, registerRequest)
+    }
+
+    static deleteProduct(productId) {
+        return this.client.post(`/product/delete`, qs.stringify({
+            "productId": productId
+        }))
+    }
+
+    static findProducts(query, page, pageSize) {
+        return this.client.get(`/product/find`, qs.stringify({
+            "query": query,
+            "page": page,
+            "pageSize": pageSize
+        }))
+    }
+
+    static countProducts() {
+        return this.client.get(`/product/count`)
+    }
+
+    static editProduct(product) {
+        return this.client.post(`/product/edit`, product)
+    }
+
+
+
 }

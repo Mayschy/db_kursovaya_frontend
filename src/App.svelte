@@ -8,6 +8,11 @@
 	let role;
 	let passowrd;
 	let adminSecret;
+	let email;
+
+	function sendEmailCode() {
+		PublicMarketplaceApi.sendEmailCode(email)
+	}
 
 	function register() {
 		PublicMarketplaceApi.register(
@@ -19,13 +24,17 @@
 			mailCode,
 			adminSecret,
 		)
-			.catch(it => console.error(it))
-			.then(it => it.json())
-			.then(it => console.log(it))
+			.then((it) => console.log(it.message))
+			.then((it) => it.json())
+			.then((it) => console.log(it));
 	}
 </script>
 
 <main>
+	<p>Email</p>
+	<input type="email" bind:value={email} />
+	<button on:click={sendEmailCode}>Send email code</button>
+
 	<p>Username</p>
 	<input type="text" bind:value={username} />
 
@@ -56,13 +65,6 @@
 		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
 	}
 
 	@media (min-width: 640px) {
