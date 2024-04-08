@@ -2,11 +2,13 @@ import axios from "axios"
 import qs from "qs"
 
 const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080"
-const marketplaceClient = axios.create({
-    baseURL: MARKET_PLACE_ENDPOINT,
-})
+
 
 export class PublicMarketplaceApi {
+    static marketplaceClient = axios.create({
+        baseURL: MARKET_PLACE_ENDPOINT,
+    })
+
     static register(username, firstname, lastname, password, role, mailCode, adminSecret) {
         const payload = {
             "username": username,
@@ -24,6 +26,14 @@ export class PublicMarketplaceApi {
     static sendEmailCode(email) {
         return marketplaceClient.post(`/account/send_email_code`, qs.stringify({
             "email": email
+        }))
+    }
+
+    static findUsers(query, page, pageSize) {
+        return marketplaceClient.get(`/account/find_users`, qs.stringify({
+            "query": query,
+            "page": page,
+            "pageSize": pageSize
         }))
     }
 }
@@ -195,7 +205,7 @@ export class PriveteMarketplaceApi {
             "listId": listId
         }))
     }
-    
+
     static getUserPublicFavoriteLists(accountId) {
         return this.client.get(`/favlist/find_account_public_lists`, qs.stringify({
             "accountId": accountId
