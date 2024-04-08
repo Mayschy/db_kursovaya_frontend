@@ -106,6 +106,55 @@ export class PriveteMarketplaceApi {
         return this.client.post(`/product/edit`, product)
     }
 
+    static registerDiscount(registerRequest) {
+        return this.client.post(`/discount/register`, registerRequest)
+    }
+
+    static deleteDiscount(discountId) {
+        return this.client.post(`/discount/delete`, qs.stringify({
+            "discountId": discountId
+        }))
+    }
+
+    static listDiscounts(page, pageSize) {
+        return this.client.get(`/discount/list`, qs.stringify({
+            "page": page,
+            "pageSize": pageSize
+        }))
+    }
+
+    static registerOrder(registerRequest) {
+        return this.client.post(`/order/register`, registerRequest)
+    }
+
+    static cancelOrder(orderId) {
+        return this.client.post(`/order/cancel`, qs.stringify({
+            "orderId": orderId
+        }))
+    }
+
+    static changeOrderStatus(orderId, newStatus) {
+        return this.client.post(`/order/change_status`, qs.stringify({
+            "orderId": orderId,
+            "newStatus": newStatus
+        }))
+    }
+
+    static listMyOrders(page, pageSize) {
+        return this.client.get(`/order/list_my`, qs.stringify({
+            "page": page,
+            "pageSize": pageSize
+        }))
+    }
+
+    static countMyOrders() {
+        return this.client.get(`/order/count_my`)
+    }
+
+    static calculateOrder(registerRequest) {
+        return this.client.get(`/order/calculate`, registerRequest)
+    }
+
 
 
 }
