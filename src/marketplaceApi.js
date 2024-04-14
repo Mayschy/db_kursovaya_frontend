@@ -30,7 +30,7 @@ export class PublicMarketplaceApi {
     }
 
     static findUsers(query, page, pageSize) {
-        return marketplaceClient.get(`/account/find_users`, qs.stringify({
+        return marketplaceClient.get(`/account/users`, qs.stringify({
             "query": query,
             "page": page,
             "pageSize": pageSize
@@ -52,17 +52,17 @@ export class PriveteMarketplaceApi {
     }
 
     static getMe() {
-        return authenitcatedClient.get(`/account/get_me`)
+        return authenitcatedClient.get(`/account/me`)
     }
 
     static addShippingAddress(shippingAddress) {
-        return authenitcatedClient.post(`${MARKET_PLACE_ENDPOINT}/account/add_shipping_address`, qs.stringify({
+        return authenitcatedClient.post(`${MARKET_PLACE_ENDPOINT}/account/shipping_address`, qs.stringify({
             "shippingAddress": shippingAddress
         }))
     }
 
     static removeShippingAddress(shippingAddress) {
-        return authenitcatedClient.post(`${MARKET_PLACE_ENDPOINT}/account/remove_shipping_address`, qs.stringify({
+        return authenitcatedClient.delete(`${MARKET_PLACE_ENDPOINT}/account/shipping_address`, qs.stringify({
             "shippingAddress": shippingAddress
         }))
     }
