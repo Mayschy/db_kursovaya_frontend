@@ -1,7 +1,7 @@
 import axios from "axios"
 import qs from "qs"
 
-const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080"
+const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080/v2"
 
 
 export class PublicMarketplaceApi {
@@ -20,17 +20,17 @@ export class PublicMarketplaceApi {
             "adminSecret": adminSecret
         }
 
-        return marketplaceClient.post(`/account/register`, payload)
+        return this.marketplaceClient.post(`/account/register`, payload)
     }
 
     static sendEmailCode(email) {
-        return marketplaceClient.post(`/account/send_email_code`, qs.stringify({
+        return this.marketplaceClient.post(`/account/send_email_code`, qs.stringify({
             "email": email
         }))
     }
 
     static findUsers(query, page, pageSize) {
-        return marketplaceClient.get(`/account/users`, qs.stringify({
+        return this.marketplaceClient.get(`/account/users`, qs.stringify({
             "query": query,
             "page": page,
             "pageSize": pageSize
@@ -40,39 +40,69 @@ export class PublicMarketplaceApi {
 
 export class PriveteMarketplaceApi {
     static authHeaders
-    static client
+    static authenitcatedClient
 
     static initCreditans(username, password) {
         this.authHeaders = new Headers()
-        this.authHeaders.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
-        this.client = axios.create({
+        this.authHeaders.set('Authorization', 'Basic ' + btoa(username + ":" + password))
+        this.authenitcatedClient = axios.create({
             baseURL: MARKET_PLACE_ENDPOINT,
             headers: this.authHeaders
         })
     }
 
+    static uploadFile(multipart) {
+        return this.authenitcatedClient.post(`/file-storage/file`, {multipart}) // idk
+    }
+
+    static uploadFileByURL(filename, url) {
+        return this.authenitcatedClient.post(`/file-storage/file_by_url`, qs.stringify({
+            "name": filename,
+            "url": url
+        }))
+    }
+
+    static fileInto(fileId) {
+        return this.authenitcatedClient.get(`/file-storage/${fileId}/info`)
+    }
+
+    static fileBytes(fileId) {
+        return this.authenitcatedClient.get(`/file-storage/${fileId}/bytes`)
+    }
+
+    static getFile(fileId) {
+        return this.authenitcatedClient.get(`/file-storage/${fileId}`)
+    }
+
+    static deleteFile(fileId) {
+        return this.authenitcatedClient.delete(`/file-storage/${fileId}`)
+    }
+
     static getMe() {
-        return authenitcatedClient.get(`/account/me`)
+        return this.authenitcatedClient.delete(`/account/me`)
     }
 
     static addShippingAddress(shippingAddress) {
-        return authenitcatedClient.post(`${MARKET_PLACE_ENDPOINT}/account/shipping_address`, qs.stringify({
+        return this.authenitcatedClient.post(`${MARKET_PLACE_ENDPOINT}/account/shipping_address`, qs.stringify({
             "shippingAddress": shippingAddress
         }))
     }
 
     static removeShippingAddress(shippingAddress) {
-        return authenitcatedClient.delete(`${MARKET_PLACE_ENDPOINT}/account/shipping_address`, qs.stringify({
+        return this.authenitcatedClient.delete(`${MARKET_PLACE_ENDPOINT}/account/shipping_address`, qs.stringify({
             "shippingAddress": shippingAddress
         }))
     }
+    /** 
+     * Categories
+     */
 
     static registerCategory(registerRequest) {
-        return authenitcatedClient.post(`/category/register`, registerRequest)
+        return this.authenitcatedClient.post(`/categories/register`, registerRequest)
     }
 
     static findCategory(query, page, pageSize) {
-        return authenitcatedClient.get(`/category/find`, qs.stringify({
+        return this.authenitcatedClient.get(`/categories/find`, qs.stringify({
             "query": query,
             "page": page,
             "pageSize": pageSize
@@ -80,28 +110,29 @@ export class PriveteMarketplaceApi {
     }
 
     static listCategory(page, pageSize) {
-        return this.client.get(`/category/list`, qs.stringify({
+        return this.authenitcatedClient.get(`/categories`, qs.stringify({
             "page": page,
             "pageSize": pageSize
         }))
     }
 
     static countCategories() {
-        return this.client.get(`/category/count`)
+        return this.authenitcatedClient.get(`/categories/count`)
     }
 
+    /*
+    * Products
+    */
     static registerProduct(registerRequest) {
-        return this.client.post(`/product/register`, registerRequest)
+        return this.authenitcatedClient.post(`/products/register`, registerRequest)
     }
 
     static deleteProduct(productId) {
-        return this.client.post(`/product/delete`, qs.stringify({
-            "productId": productId
-        }))
+        return this.authenitcatedClient.delete(`/products/${productId}`)
     }
 
     static findProducts(query, page, pageSize) {
-        return this.client.get(`/product/find`, qs.stringify({
+        return this.authenitcatedClient.get(`/products/find`, qs.stringify({
             "query": query,
             "page": page,
             "pageSize": pageSize
@@ -109,106 +140,120 @@ export class PriveteMarketplaceApi {
     }
 
     static countProducts() {
-        return this.client.get(`/product/count`)
+        return this.authenitcatedClient.get(`/products/count`)
     }
 
     static editProduct(product) {
-        return this.client.post(`/product/edit`, product)
+        return this.authenitcatedClient.post(`/products/edit`, product)
     }
 
+    /*
+    * Discounts
+    */
     static registerDiscount(registerRequest) {
-        return this.client.post(`/discount/register`, registerRequest)
+        return this.authenitcatedClient.post(`/discounts/register`, registerRequest)
     }
 
     static deleteDiscount(discountId) {
-        return this.client.post(`/discount/delete`, qs.stringify({
-            "discountId": discountId
-        }))
+        return this.authenitcatedClient.delete(`/discounts/${discountId}`)
     }
 
     static listDiscounts(page, pageSize) {
-        return this.client.get(`/discount/list`, qs.stringify({
+        return this.authenitcatedClient.get(`/discounts`, qs.stringify({
             "page": page,
             "pageSize": pageSize
         }))
     }
+    /*
+    * Orders
+    */
 
     static registerOrder(registerRequest) {
-        return this.client.post(`/order/register`, registerRequest)
+        return this.authenitcatedClient.post(`/orders/register`, registerRequest)
     }
 
     static cancelOrder(orderId) {
-        return this.client.post(`/order/cancel`, qs.stringify({
+        return this.authenitcatedClient.post(`/orders/cancel`, qs.stringify({
             "orderId": orderId
         }))
     }
 
     static changeOrderStatus(orderId, newStatus) {
-        return this.client.post(`/order/change_status`, qs.stringify({
-            "orderId": orderId,
+        return this.authenitcatedClient.post(`/orders/${orderId}/change_status`, qs.stringify({
             "newStatus": newStatus
         }))
     }
 
     static listMyOrders(page, pageSize) {
-        return this.client.get(`/order/list_my`, qs.stringify({
+        return this.authenitcatedClient.get(`/orders/list_my`, qs.stringify({
             "page": page,
             "pageSize": pageSize
         }))
     }
 
     static countMyOrders() {
-        return this.client.get(`/order/count_my`)
+        return this.authenitcatedClient.get(`/orders/count_my`)
     }
 
     static calculateOrder(registerRequest) {
-        return this.client.get(`/order/calculate`, registerRequest)
+        return this.authenitcatedClient.get(`/orders/calculate`, registerRequest)
     }
 
+    /*
+    * Favlists
+    */
     static createFavoriteList(registerRequest) {
-        return this.client.post(`/favlist/create`, registerRequest)
+        return this.authenitcatedClient.post(`/favlists/create`, registerRequest)
     }
 
     static deleteFavoriteList(listId) {
-        return this.client.post(`/favlist/delete`, qs.stringify({
-            "listId": listId
-        }))
+        return this.authenitcatedClient.delete(`/favlists/${listId}`)
     }
 
     static changeFavoriteListVisibility(listId, isPublic) {
-        return this.client.post(`/favlist/change_visibility`, qs.stringify({
-            "listId": listId,
+        return this.authenitcatedClient.post(`/favlists/${listId}/change_visibility`, qs.stringify({
             "isPublic": isPublic
         }))
     }
 
     static addProductToFavoriteList(listId, productId) {
-        return this.client.post(`/favlist/add_product`, qs.stringify({
-            "listId": listId,
-            "productId": productId
-        }))
+        return this.authenitcatedClient.post(`/favlists/${listId}/product/${productId}`)
     }
 
     static removeProductFromFavoriteList(listId, productId) {
-        return this.client.post(`/favlist/remove_product`, qs.stringify({
-            "listId": listId,
-            "productId": productId
-        }))
+        return this.authenitcatedClient.delete(`/favlists/${listId}/product/${productId}`)
     }
 
     static getMyFavoriteLists() {
-        return this.client.get(`/favlist/get_my`)
+        return this.authenitcatedClient.get(`/favlists/my`)
     }
 
     static getPublicFavoriteList(listId) {
-        return this.client.get(`/favlist/get_public`, qs.stringify({
-            "listId": listId
-        }))
+        return this.authenitcatedClient.get(`/favlists/${listId}/get_public`)
     }
 
     static getUserPublicFavoriteLists(accountId) {
-        return this.client.get(`/favlist/find_account_public_lists`, qs.stringify({
-            "accountId": accountId
+        return this.authenitcatedClient.get(`/favlists/from_account/${accountId}`)
+    }
+
+    /*
+    * Comments
+    */
+
+    static registerComment(registerRequest) {
+        return this.authenitcatedClient.post(`/comments/register`, registerRequest)
+    }
+
+    static deleteComment(commentId) {
+        return this.authenitcatedClient.delete(`/comments/${commentId}`)
+    }
+
+    static listComments(productId, page, pageSize) {
+        return this.authenitcatedClient.get(`/comments/from_product/${productId}`, qs.stringify({
+            "page": page,
+            "pageSize": pageSize
         }))
     }
 }
+
+ 
