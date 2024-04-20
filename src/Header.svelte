@@ -12,6 +12,6 @@
         </div>
     </div>
     <div class="user">
-        <a href="login"><img src="rep/usericon.png" alt="User"></a>
+        <a href="routes/login"><img src="rep/usericon.png" alt="User"></a>
     </div>
 </header>
