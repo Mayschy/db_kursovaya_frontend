@@ -1,9 +1,9 @@
 <header>
     <div class="cart">
-        <a href="cart"><img src="rep/busketicon.png" alt="Cart"></a>
+        <a href="cart"><img src="/rep/busketicon.png" alt="Cart"></a>
     </div>
     <div class="logo">
-        <div class="iconLogo"><img width="60px" height="60px" src="rep/12.png" alt="Market Icon"></div>
+        <div class="iconLogo"><img width="60px" height="60px" src="/rep/12.png" alt="Market Icon"></div>
         <a href="/">Stuck&Stock MARKET</a>
     </div>
     <div class="categories">
@@ -12,6 +12,6 @@
         </div>
     </div>
     <div class="user">
-        <a href="routes/login"><img src="rep/usericon.png" alt="User"></a>
+        <a href="/login"><img src="/rep/usericon.png" alt="User"></a>
     </div>
 </header>

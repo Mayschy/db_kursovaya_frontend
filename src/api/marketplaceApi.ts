@@ -1,36 +1,25 @@
-import axios from "axios"
+import axios, { AxiosHeaders, AxiosInstance } from "axios"
 import qs from "qs"
 
 const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080/v2"
 
+const marketplaceClient = axios.create({
+    baseURL: MARKET_PLACE_ENDPOINT,
+})
 
 export class PublicMarketplaceApi {
-    static marketplaceClient = axios.create({
-        baseURL: MARKET_PLACE_ENDPOINT,
-    })
-
-    static register(username, firstname, lastname, password, role, mailCode, adminSecret) {
-        const payload = {
-            "username": username,
-            "firstname": firstname,
-            "lastname": lastname,
-            "password": password,
-            "role": role,
-            "mailCode": mailCode,
-            "adminSecret": adminSecret
-        }
-
-        return this.marketplaceClient.post(`/account/register`, payload)
+    static register(request) {
+        return marketplaceClient.post(`/account/register`, request)
     }
 
     static sendEmailCode(email) {
-        return this.marketplaceClient.post(`/account/send_email_code`, {
-            params: {"email": email}
-        })
+        return marketplaceClient.post(`/account/send_email_code`, qs.stringify({
+            "email": email
+        }))
     }
 
     static findUsers(query, page, pageSize) {
-        return this.marketplaceClient.get(`/account/users`, {
+        return marketplaceClient.get(`/account/users`, {
             params: {
                 "query": query,
                 "page": page,
@@ -41,8 +30,12 @@ export class PublicMarketplaceApi {
 }
 
 export class PrivateMarketplaceApi {
+    static instance?: PrivateMarketplaceApi = undefined;
+    authHeaders: AxiosHeaders
+    authenticatedClient: AxiosInstance
+
     constructor(username, password) {
-        this.authHeaders = new Headers()
+        this.authHeaders = new AxiosHeaders()
         this.authHeaders.set('Authorization', 'Basic ' + btoa(username + ":" + password))
         this.authenticatedClient = axios.create({
             baseURL: MARKET_PLACE_ENDPOINT,
@@ -51,7 +44,7 @@ export class PrivateMarketplaceApi {
     }
 
     uploadFile(multipart) {
-        return this.authenticatedClient.post(`/file-storage/file`, {multipart}) // idk
+        return this.authenticatedClient.post(`/file-storage/file`, { multipart }) // idk
     }
 
     uploadFileByURL(filename, url) {
@@ -61,16 +54,16 @@ export class PrivateMarketplaceApi {
         }))
     }
 
-    fileInto(fileId) {
-        return this.authenticatedClient.get(`/file-storage/${fileId}/info`)
+    static fileInfo(fileId) {
+        return marketplaceClient.get(`/file-storage/${fileId}/info`)
     }
 
-    fileBytes(fileId) {
-        return this.authenticatedClient.get(`/file-storage/${fileId}/bytes`)
+    static fileBytes(fileId) {
+        return marketplaceClient.get(`/file-storage/${fileId}/bytes`)
     }
 
-    getFile(fileId) {
-        return this.authenticatedClient.get(`/file-storage/${fileId}`)
+    static getFile(fileId) {
+        return marketplaceClient.get(`/file-storage/${fileId}`)
     }
 
     deleteFile(fileId) {
@@ -103,8 +96,8 @@ export class PrivateMarketplaceApi {
         return this.authenticatedClient.post(`/categories/register`, registerRequest)
     }
 
-    findCategory(query, page, pageSize) {
-        return this.authenticatedClient.get(`/categories/find`, {
+    static findCategory(query, page, pageSize) {
+        return marketplaceClient.get(`/categories/find`, {
             params: {
                 "query": query,
                 "page": page,
@@ -113,8 +106,8 @@ export class PrivateMarketplaceApi {
         })
     }
 
-    listCategory(page, pageSize) {
-        return this.authenticatedClient.get(`/categories`, {
+    static listCategory(page, pageSize) {
+        return marketplaceClient.get(`/categories`, {
             params: {
                 "page": page,
                 "pageSize": pageSize
@@ -122,8 +115,8 @@ export class PrivateMarketplaceApi {
         })
     }
 
-    countCategories() {
-        return this.authenticatedClient.get(`/categories/count`)
+    static countCategories() {
+        return marketplaceClient.get(`/categories/count`)
     }
 
     /*
@@ -137,8 +130,8 @@ export class PrivateMarketplaceApi {
         return this.authenticatedClient.delete(`/products/${productId}`)
     }
 
-    findProducts(query, page, pageSize) {
-        return this.authenticatedClient.get(`/products/find`, {
+    static findProducts(query, page, pageSize) {
+        return marketplaceClient.get(`/products/find`, {
             params: {
                 "query": query,
                 "page": page,
@@ -147,8 +140,8 @@ export class PrivateMarketplaceApi {
         })
     }
 
-    countProducts() {
-        return this.authenticatedClient.get(`/products/count`)
+    static countProducts() {
+        return marketplaceClient.get(`/products/count`)
     }
 
     addProductImage(productId, imageLink) {
@@ -176,8 +169,8 @@ export class PrivateMarketplaceApi {
         return this.authenticatedClient.delete(`/discounts/${discountId}`)
     }
 
-    listDiscounts(page, pageSize) {
-        return this.authenticatedClient.get(`/discounts`, {
+    static listDiscounts(page, pageSize) {
+        return marketplaceClient.get(`/discounts`, {
             params: {
                 "page": page,
                 "pageSize": pageSize
@@ -218,8 +211,8 @@ export class PrivateMarketplaceApi {
         return this.authenticatedClient.get(`/orders/count_my`)
     }
 
-    calculateOrder(registerRequest) {
-        return this.authenticatedClient.get(`/orders/calculate`, registerRequest)
+    static calculateOrder(registerRequest) {
+        return marketplaceClient.get(`/orders/calculate`, registerRequest)
     }
 
     /*
@@ -251,12 +244,12 @@ export class PrivateMarketplaceApi {
         return this.authenticatedClient.get(`/favlists/my`)
     }
 
-    getPublicFavoriteList(listId) {
-        return this.authenticatedClient.get(`/favlists/${listId}/get_public`)
+    static getPublicFavoriteList(listId) {
+        return marketplaceClient.get(`/favlists/${listId}/get_public`)
     }
 
-    getUserPublicFavoriteLists(accountId) {
-        return this.authenticatedClient.get(`/favlists/from_account/${accountId}`)
+    static getUserPublicFavoriteLists(accountId) {
+        return marketplaceClient.get(`/favlists/from_account/${accountId}`)
     }
 
     /*
@@ -271,8 +264,8 @@ export class PrivateMarketplaceApi {
         return this.authenticatedClient.delete(`/comments/${commentId}`)
     }
 
-    listComments(productId, page, pageSize) {
-        return this.authenticatedClient.get(`/comments/from_product/${productId}`, {
+    static listComments(productId, page, pageSize) {
+        return marketplaceClient.get(`/comments/from_product/${productId}`, {
             params: {
                 "page": page,
                 "pageSize": pageSize
@@ -281,4 +274,3 @@ export class PrivateMarketplaceApi {
     }
 }
 
- 

@@ -1,36 +1,143 @@
 <script>
-    import {PublicMarketplaceApi} from "../../api/marketplaceApi.js";
+	import { PublicMarketplaceApi } from '../../api/marketplaceApi.js';
+
+	const availableRoles = ['admin', 'customer'];
+
+	let emailCodeSent = false;
+	let emailToSendCode = '';
+
+	function sendEmailCode() {
+		PublicMarketplaceApi.sendEmailCode(emailToSendCode).then((it) => it.json());
+		emailCodeSent = true;
+	}
+
+	let registerRequest = {
+		username: '',
+		firstname: '',
+		lastname: '',
+		password: '',
+		mailCode: '',
+		role: 'customer',
+		adminSecret: ''
+	};
+
+	function register() {
+		PublicMarketplaceApi.register(registerRequest);
+	}
 </script>
 
 <section>
-    <div class="registration-popup open">
-        <div class="close-btn">✖</div>
-        <form on:submit={() => {PublicMarketplaceApi.register()}} method="post"><h2>Register Now</h2>
-            <label for="fullname">Full Name:</label>
-            <input type="text" id="fullname" name="fullname" required="">
+	{#if !emailCodeSent}
+		<div class="d-flex justify-content-center align-items-center">
+			<div class="col-7 col-md-7 col-lg-7 col-xl-5">
+				<div class="card rounded-5 shadow-lg">
+					<div class="card-body p-5 body_colored2 rounded-5">
+						<h2 class="text-center mb-5">Send Email code</h2>
+						<div class="form-outline mb-3">
+							<input
+								bind:value={emailToSendCode}
+								type="email"
+								id="email_field"
+								class="form-control form-control-lg"
+								required
+							/>
+							<label class="form-label ms-1" for="email_field">Email</label>
+						</div>
+						<div class="d-flex justify-content-center">
+							<button on:click={sendEmailCode} class="btn btn-success btn-block btn-lg text-body"
+								>Send code
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{:else}
+		<div class="d-flex justify-content-center align-items-center">
+			<div class="col-7 col-md-7 col-lg-7 col-xl-5">
+				<div class="card rounded-5 shadow-lg">
+					<div class="card-body p-5 body_colored2 rounded-5">
+						<h2 class="text-center mb-5">Create an account</h2>
+						<div class="form-outline mb-3">
+							<input
+								bind:value={registerRequest.username}
+								type="text"
+								id="username_field"
+								class="form-control form-control-lg"
+								required
+							/>
+							<label class="form-label ms-1" for="username_field">Username</label>
+						</div>
+						<div class="form-outline mb-3">
+							<input
+								bind:value={registerRequest.firstname}
+								type="text"
+								id="firstname_field"
+								class="form-control form-control-lg"
+								required
+							/>
+							<label class="form-label ms-1" for="firstname_field">First name</label>
+						</div>
+						<div class="form-outline mb-3">
+							<input
+								bind:value={registerRequest.lastname}
+								type="text"
+								id="lastname_field"
+								class="form-control form-control-lg"
+								required
+							/>
+							<label class="form-label ms-1" for="lastname_field">Last name</label>
+						</div>
+						<div class="form-outline mb-3">
+							<input
+								bind:value={registerRequest.mailCode}
+								type="number"
+								id="emailcode_field"
+								class="form-control form-control-lg"
+								required
+							/>
+							<label class="form-label ms-1" for="emailcode_field">Email code</label>
+						</div>
+						<div class="form-outline mb-3">
+							<input
+								bind:value={registerRequest.password}
+								type="password"
+								id="pass_field"
+								class="form-control form-control-lg"
+								required
+							/>
+							<label class="form-label ms-1" for="pass_field">Password</label>
+						</div>
+						<details>
+							<summary>Specify role</summary>
+							<select bind:value={registerRequest.role}>
+								{#each availableRoles as role}
+									<option value={role}>
+										{role}
+									</option>
+								{/each}
+							</select>
 
-            <label for="email">Email:</label><br>
-            <input type="email" id="email" name="email" class="login-input"
-                   required=""><br>
+							{#if registerRequest.role == 'admin'}
+								<div class="form-outline mb-3">
+									<input
+										bind:value={registerRequest.adminSecret}
+										type="text"
+										id="adminSecret_field"
+										class="form-control form-control-lg"
+										required
+									/>
+									<label class="form-label ms-1" for="adminSecret_field">Admin Secret</label>
+								</div>
+							{/if}
+						</details>
 
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required="">
-
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" class="login-input"
-                   title="Password must be at least 8 characters long" required=""><br><br>
-
-            <label for="Checkmail-code">Check-mail code:</label>
-            <input type="text" id="Checkmail-code" name="Checkmail-code" required="">
-
-            <label for="Admin-secret">Admin-secret:</label>
-            <input type="text" id="Admin-secret" name="Admin-secret" placeholder="0000" required="">
-
-            <label for="address">Registration Address:</label>
-            <textarea id="address" name="address" rows="3" required=""></textarea>
-
-            <button class="submit-btn" type="submit">Register</button>
-            <button class="check-mail-code-btn">Check Mail-Code</button>
-        </form>
-    </div>
+						<div class="d-flex justify-content-center">
+							<button on:click={register} class="btn btn-success btn-block btn-lg text-body">Register</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
 </section>
