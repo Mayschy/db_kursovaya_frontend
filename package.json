@@ -9,16 +9,13 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.24.1",
-		"@babel/core": "^7.24.4",
-		"@babel/preset-flow": "^7.24.1",
 		"@fontsource/fira-mono": "^4.5.10",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "^8.56.0",
-		"babel-plugin-syntax-hermes-parser": "^0.20.1",
+		"@types/qs": "^6.9.15",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.35.1",
@@ -30,6 +27,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/axios": "^0.14.0",
 		"axios": "^1.6.8",
 		"qs": "^6.12.1",
 		"svelte-switch": "^0.0.5"

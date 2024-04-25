@@ -1,14 +1,15 @@
 <script>
-	import { PublicMarketplaceApi } from '../../api/marketplaceApi.js';
-
+	import { PublicMarketplaceApi } from '../../api/marketplaceApi';
 	const availableRoles = ['admin', 'customer'];
 
 	let emailCodeSent = false;
 	let emailToSendCode = '';
 
-	function sendEmailCode() {
-		PublicMarketplaceApi.sendEmailCode(emailToSendCode).then((it) => it.json());
-		emailCodeSent = true;
+	async function sendEmailCode() {
+		const response = await PublicMarketplaceApi.sendEmailCode(emailToSendCode)
+        alert(response.status)
+        if (response.status >= 200 && response.status < 300)
+		    emailCodeSent = true;
 	}
 
 	let registerRequest = {
@@ -21,7 +22,7 @@
 		adminSecret: ''
 	};
 
-	function register() {
+	async function register() {
 		PublicMarketplaceApi.register(registerRequest);
 	}
 </script>
@@ -133,7 +134,9 @@
 						</details>
 
 						<div class="d-flex justify-content-center">
-							<button on:click={register} class="btn btn-success btn-block btn-lg text-body">Register</button>
+							<button on:click={register} class="btn btn-success btn-block btn-lg text-body"
+								>Register</button
+							>
 						</div>
 					</div>
 				</div>
