@@ -18,6 +18,18 @@ export interface IAccountRegisterDto {
     adminSecret?: string
 }
 
+export interface IProductDto {
+    id: string,
+    caption: string,
+    categories: Array<string>,
+    characteristics: Map<string, string>,
+    description: string,
+    price: number,
+    rate: number,
+    ordersCount: number,
+    images: Array<string>
+}
+
 export class PublicMarketplaceApi {
     static register(request: IAccountRegisterDto) {
         return marketplaceClient.post(`/account/register`, request)
@@ -140,6 +152,10 @@ export class PrivateMarketplaceApi {
 
     deleteProduct(productId: string) {
         return this.authenticatedClient.delete(`/products/${productId}`)
+    }
+
+    static getProduct(productId:string) {
+        return marketplaceClient.get(`/products/${productId}`)
     }
 
     static findProducts(query: string, page: number, pageSize: number) {

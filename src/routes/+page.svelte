@@ -1,6 +1,6 @@
 <script>
 
-    import NavItem from "../NavItem.svelte";
+    import NavItem from "../components/NavItem.svelte";
 
     let categories = [
         {
