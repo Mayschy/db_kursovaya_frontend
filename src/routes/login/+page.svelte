@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 
 	import { PrivateMarketplaceApi } from '../../api/marketplaceApi';
+	import { is_successful } from '../../api/utils';
 
 	let loginRequest = {
 		username: '',
@@ -12,9 +13,11 @@
 		const privateApi = new PrivateMarketplaceApi(loginRequest.username, loginRequest.password);
 
 		const me = await privateApi.getMe();
-		if (is_successful(me.status)) PrivateMarketplaceApi.instance = privateApi;
-
-		console.log(me.data);
+		if (is_successful(me.status)) 
+		{
+			PrivateMarketplaceApi.instance = privateApi;
+			alert(`Successfully logged as ${me.data.username}`)
+		}
 	}
 </script>
 
@@ -40,7 +43,7 @@
 				class="login-input"
 				title="Password must be at least 8 characters long"
 				required
-			/><br>
+			/><br />
 			<button class="login-btn2" on:click={login}>Login</button>
 		</div>
 

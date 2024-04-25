@@ -48,6 +48,7 @@ export class PrivateMarketplaceApi {
     constructor(username: string, password: string) {
         this.authHeaders = new AxiosHeaders()
         this.authHeaders.set('Authorization', 'Basic ' + btoa(username + ":" + password))
+        this.authHeaders.set('Access-Control-Allow-Origin', '*')
         this.authenticatedClient = axios.create({
             baseURL: MARKET_PLACE_ENDPOINT,
             headers: this.authHeaders
@@ -82,7 +83,7 @@ export class PrivateMarketplaceApi {
     }
 
     getMe() {
-        return this.authenticatedClient.delete(`/account/me`)
+        return this.authenticatedClient.get(`/account/me`)
     }
 
     addShippingAddress(shippingAddress: string) {
