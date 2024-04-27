@@ -8,6 +8,24 @@ const marketplaceClient = axios.create({
 })
 
 
+export const DEFAULT_PAGE_SIZE = 15
+
+export interface ICategoryDto {
+    name: string,
+    parentCategory?: string,
+    subcategories: string[],
+    requiredProps: string[]
+}
+
+export interface ICommentDto {
+    id: string,
+    ownerId: string,
+    productId: string,
+    content: string,
+    rate: number,
+    timestamp: Date
+}
+
 export interface IAccountRegisterDto {
     username: string,
     firstname: string,
@@ -21,13 +39,13 @@ export interface IAccountRegisterDto {
 export interface IProductDto {
     id: string,
     caption: string,
-    categories: Array<string>,
+    categories: string[],
     characteristics: Map<string, string>,
     description: string,
     price: number,
     rate: number,
     ordersCount: number,
-    images: Array<string>
+    images: string[]
 }
 
 export class PublicMarketplaceApi {
@@ -154,7 +172,7 @@ export class PrivateMarketplaceApi {
         return this.authenticatedClient.delete(`/products/${productId}`)
     }
 
-    static getProduct(productId:string) {
+    static getProduct(productId: string) {
         return marketplaceClient.get(`/products/${productId}`)
     }
 
