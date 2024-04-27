@@ -48,6 +48,15 @@ export interface IProductDto {
     images: string[]
 }
 
+export interface IProductRegisterDto {
+    caption: string,
+    categories: string[],
+    characteristics: Map<string,string>,
+    description: string,
+    price: number,
+    images: string[]
+}
+
 export class PublicMarketplaceApi {
     static register(request: IAccountRegisterDto) {
         return marketplaceClient.post(`/account/register`, request)
