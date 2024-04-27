@@ -57,6 +57,7 @@
 		// 		requiredProps: ['length', 'weight']
 		// 	}
 		// ];
+
 		const result = await PrivateMarketplaceApi.findCategory(name, page, DEFAULT_PAGE_SIZE);
 		fetchedCategories = result.data as ICategoryDto[];
 	}
@@ -88,7 +89,7 @@
 			{/each}
 		</select>
 	</DefaultCard>
-	{#if action == AdminActions.ADD_CATEGORY}
+	{#if action == AdminActions.ADD_PRODUCT}
 		<DefaultCard>
 			<h2>Добавить Товар</h2>
 			<div class="mb-3">

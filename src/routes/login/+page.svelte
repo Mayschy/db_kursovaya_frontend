@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import { PrivateMarketplaceApi } from '../../api/marketplaceApi';
+	import { PrivateMarketplaceApi, authenticate } from '../../api/marketplaceApi';
 	import { is_successful } from '../../api/utils';
 
 	let loginRequest = {
@@ -9,14 +9,13 @@
 		password: ''
 	};
 
-	async function login() {
-		const privateApi = new PrivateMarketplaceApi(loginRequest.username, loginRequest.password);
+	import { credentials } from '../../api/marketplaceApi';
+	import { get } from 'svelte/store';
 
-		const me = await privateApi.getMe();
-		if (is_successful(me.status)) 
-		{
-			PrivateMarketplaceApi.instance = privateApi;
-			alert(`Successfully logged as ${me.data.username}`)
+	async function login() {
+		if (authenticate(loginRequest.username, loginRequest.password) != undefined) {
+			const data = JSON.parse(get(credentials).data);
+			alert(`Successfully logged as ${data.firstname}`);
 		}
 	}
 </script>

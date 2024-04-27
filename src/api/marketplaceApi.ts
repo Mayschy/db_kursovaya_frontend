@@ -1,5 +1,8 @@
 import axios, { AxiosHeaders, type AxiosInstance } from "axios"
 import qs from "qs"
+import { is_successful } from "./utils"
+import { get } from "svelte/store"
+import { persisted } from 'svelte-persisted-store'
 
 const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080/v2"
 
@@ -7,6 +10,11 @@ const marketplaceClient = axios.create({
     baseURL: MARKET_PLACE_ENDPOINT,
 })
 
+export const credentials = persisted('credentials', {
+    'username': '',
+    'password': '',
+    'data': ''
+})
 
 export const DEFAULT_PAGE_SIZE = 15
 
@@ -51,7 +59,7 @@ export interface IProductDto {
 export interface IProductRegisterDto {
     caption: string,
     categories: string[],
-    characteristics: Map<string,string>,
+    characteristics: Map<string, string>,
     description: string,
     price: number,
     images: string[]
@@ -79,10 +87,35 @@ export class PublicMarketplaceApi {
     }
 }
 
+export function isAuthenticated() {
+    return get(credentials).username != '' && get(credentials).password != ''
+}
+
+export async function authenticate(username: string, password: string) {
+    const privateApi = new PrivateMarketplaceApi(username, password)
+    const getMeResult = await privateApi.getMe()
+    if (!is_successful(getMeResult.status))
+        return undefined
+
+    credentials.set({
+        'username': username,
+        'password': password,
+        'data': JSON.stringify(getMeResult.data)
+    })
+
+    return privateApi
+}
+
 export class PrivateMarketplaceApi {
-    static instance?: PrivateMarketplaceApi = undefined;
     authHeaders: AxiosHeaders
     authenticatedClient: AxiosInstance
+
+    static fromLocalStorage() {
+        const username = get(credentials).username
+        const password = get(credentials).password
+
+        return new PrivateMarketplaceApi(username, password)
+    }
 
     constructor(username: string, password: string) {
         this.authHeaders = new AxiosHeaders()
