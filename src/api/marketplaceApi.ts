@@ -65,6 +65,13 @@ export interface IProductRegisterDto {
     images: string[]
 }
 
+export interface ICategoryRegisterDto {
+    name: string,
+    parentCategory: string,
+    subcategories: string[],
+    requiredProps: string[]
+}
+
 export class PublicMarketplaceApi {
     static register(request: IAccountRegisterDto) {
         return marketplaceClient.post(`/account/register`, request)
