@@ -85,7 +85,7 @@
 			<div class="row">
 				<label for="search_field">Category name</label>
 				<div class="col">
-					<input class="form-control" type="text" value={categoryName} id="search_field" />
+					<input class="form-control" type="text" bind:value={categoryName} id="search_field" />
 				</div>
 				<div class="col">
 					<button
