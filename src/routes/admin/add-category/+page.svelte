@@ -7,8 +7,9 @@
 		type IProductRegisterDto
 	} from '@/api/marketplaceApi';
 	import DefaultCard from '@/components/DefaultCard.svelte';
-	import Selector from '@/components/Selector.svelte';
-	import SelectorItem from '@/components/SelectorItem.svelte';
+	import AddRemoveItem from '@/components/selector/AddRemoveItem.svelte';
+	import Selector from '@/components/selector/Selector.svelte';
+	import SelectorItem from '@/components/selector/SelectorItem.svelte';
 
 	const privateApi = PrivateMarketplaceApi.fromLocalStorage();
 
@@ -19,13 +20,7 @@
 		requiredProps: []
 	};
 
-	let fetchedCategories: ICategoryDto[];
-
-	async function fetchCategories(name: string, page: number) {
-		const result = await PrivateMarketplaceApi.findCategory(name, page, DEFAULT_PAGE_SIZE);
-		fetchedCategories = result.data as ICategoryDto[];
-		console.log(result);
-	}
+	let selectedCategories: any[] = [];
 
 	async function fetchCategories2(query: string, page: number) {
 		// const result = await PrivateMarketplaceApi.findCategory(query, page, DEFAULT_PAGE_SIZE)
@@ -44,11 +39,14 @@
 		];
 	}
 
-	function onClickCategory(category: any) {
+	function onClickCategory(category: any, add: boolean) {
 		console.log(category);
-	}
 
-	let el: any;
+		if (add) selectedCategories.push(category);
+		else selectedCategories.splice(selectedCategories.indexOf(category), 1);
+
+		selectedCategories = selectedCategories;
+	}
 </script>
 
 <section>
@@ -59,8 +57,15 @@
 			<input type="text" class="form-control" id="categoryName" required />
 		</div>
 		<div>
-			<Selector fetchElements={fetchCategories2} handler={onClickCategory}>
-				<p let:item>{item}</p>
+			<Selector fetchElements={fetchCategories2} let:item>
+				<p slot="header">Select category</p>
+				<AddRemoveItem
+					handler={onClickCategory}
+					conatains={(item) => selectedCategories.includes(item)}
+					{item}
+				>
+					<p>{item.name}</p>
+				</AddRemoveItem>
 			</Selector>
 		</div>
 	</DefaultCard>
