@@ -8,8 +8,7 @@
 	export let fetchElements: (query: string, page: number) => Promise<any[]>;
 
 	async function fetch(query: string, page: number) {
-		const newElements = await fetchElements(query, page);
-		elements = newElements;
+		elements = await fetchElements(query, page);
 	}
 </script>
 
@@ -35,9 +34,16 @@
 		<div class="pt-3">
 			<div class="list-group">
 				{#each elements as item}
-					<slot {item} />
+					<slot  {item} />
 				{/each}
 			</div>
 		</div>
+		<!-- {#if selectedElements != null}
+			<div class="list-group pt-3">
+				{#each selectedElements as selected}
+					<slot name="selected" {selected} />
+				{/each}
+			</div>
+		{/if} -->
 	</div>
 </section>

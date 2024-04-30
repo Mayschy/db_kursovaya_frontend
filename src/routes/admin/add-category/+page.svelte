@@ -9,43 +9,34 @@
 	import DefaultCard from '@/components/DefaultCard.svelte';
 	import AddRemoveItem from '@/components/selector/AddRemoveItem.svelte';
 	import Selector from '@/components/selector/Selector.svelte';
-	import SelectorItem from '@/components/selector/SelectorItem.svelte';
-
+	import ElementsList from '@/components/list/ElementsList.svelte';
+	import ListButton from '@/components/list/ListButton.svelte';
 	const privateApi = PrivateMarketplaceApi.fromLocalStorage();
 
-	let categoryRegister: ICategoryRegisterDto = {
-		name: '',
-		parentCategory: '',
-		subcategories: [],
-		requiredProps: []
-	};
-
-	let selectedCategories: any[] = [];
+	let parentCategories: any[] = [];
 
 	async function fetchCategories2(query: string, page: number) {
-		// const result = await PrivateMarketplaceApi.findCategory(query, page, DEFAULT_PAGE_SIZE)
-		// return result.data as any[]
+		// const result = await PrivateMarketplaceApi.findCategory(query, page, DEFAULT_PAGE_SIZE);
+		// return result.data as any[];
 
 		return [
 			{
-				name: 'first category'
+				name: 'hello world'
 			},
 			{
-				name: 'second'
+				name: 'hello world 2'
 			},
 			{
-				name: 'thired'
+				name: 'hello world 3'
 			}
 		];
 	}
 
 	function onClickCategory(category: any, add: boolean) {
-		console.log(category);
+		if (add) parentCategories.push(category);
+		else parentCategories.splice(parentCategories.indexOf(category), 1);
 
-		if (add) selectedCategories.push(category);
-		else selectedCategories.splice(selectedCategories.indexOf(category), 1);
-
-		selectedCategories = selectedCategories;
+		parentCategories = parentCategories;
 	}
 </script>
 
@@ -58,15 +49,25 @@
 		</div>
 		<div>
 			<Selector fetchElements={fetchCategories2} let:item>
-				<p slot="header">Select category</p>
+				<p slot="header">Select parent categories</p>
 				<AddRemoveItem
 					handler={onClickCategory}
-					conatains={(item) => selectedCategories.includes(item)}
+					conatains={(item) => parentCategories.includes(item)}
 					{item}
 				>
 					<p>{item.name}</p>
 				</AddRemoveItem>
 			</Selector>
+			<ElementsList elements={parentCategories} let:item>
+				<ListButton
+					{item}
+					btnText="remove"
+					handler={() => {
+						parentCategories.splice(parentCategories.indexOf(item), 1);
+						parentCategories = parentCategories;
+					}}
+				/>
+			</ElementsList>
 		</div>
 	</DefaultCard>
 </section>
