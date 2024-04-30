@@ -1,5 +1,5 @@
 <script>
-	import { isAuthenticated } from '../api/marketplaceApi';
+	import { isAuthenticated, logout } from '../api/marketplaceApi';
 </script>
 
 <header>
@@ -20,6 +20,7 @@
 		<a href="/login"><img src="/rep/usericon.png" alt="User" /></a>
 		{#if isAuthenticated()}
 			<p class="text-success">Authenticated</p>
+			<button on:click={logout} class="btn btn-danger ">Logout</button>
 		{/if}
 	</div>
 </header>

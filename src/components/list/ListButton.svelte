@@ -8,7 +8,7 @@
 <section>
 	<div class="row">
 		<div class="col">
-			<slot {item}><p>{item.name}</p></slot>
+			<slot {item}><p>{item}</p></slot>
 		</div>
 		<div class="col">
 			<button on:click={handler} class="{btnClass}">{btnText}</button>

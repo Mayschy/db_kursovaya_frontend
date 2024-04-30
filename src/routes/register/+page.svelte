@@ -1,7 +1,7 @@
 <script>
-	import { PrivateMarketplaceApi, PublicMarketplaceApi } from '../../api/marketplaceApi';
+	import { PrivateMarketplaceApi, PublicMarketplaceApi, authenticate } from '../../api/marketplaceApi';
 	import { is_successful } from '../../api/utils';
-	const availableRoles = ['admin', 'customer'];
+	const availableRoles = ['ADMIN', 'CUSTOMER'];
 
 	let emailCodeSent = false;
 	let emailToSendCode = '';
@@ -18,16 +18,15 @@
 		lastname: '',
 		password: '',
 		mailCode: '',
-		role: 'customer',
-		adminSecret: ''
+		role: 'CUSTOMER',
+		adminSecret: 'jMR[T0i=#j02!_;hKOE0Ttyf6'
 	};
 
 	async function register() {
 		const registerResult = await PublicMarketplaceApi.register(registerRequest);
 		if (is_successful(registerResult.status))
 		{
-			const privateApi = new PrivateMarketplaceApi(registerRequest.username, registerRequest.password)
-			PrivateMarketplaceApi.instance = privateApi
+			authenticate(registerRequest.username, registerRequest.password)
 			alert(`Logged in as ${registerRequest.username}`)
 		}
 	}
@@ -125,7 +124,7 @@
 								{/each}
 							</select>
 
-							{#if registerRequest.role == 'admin'}
+							{#if registerRequest.role == 'ADMIN'}
 								<div class="form-outline mb-3">
 									<input
 										bind:value={registerRequest.adminSecret}

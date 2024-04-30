@@ -34,16 +34,10 @@
 		<div class="pt-3">
 			<div class="list-group">
 				{#each elements as item}
-					<slot  {item} />
+					<slot {item} />
 				{/each}
 			</div>
 		</div>
-		<!-- {#if selectedElements != null}
-			<div class="list-group pt-3">
-				{#each selectedElements as selected}
-					<slot name="selected" {selected} />
-				{/each}
-			</div>
-		{/if} -->
+		<slot name="additional"/>
 	</div>
 </section>

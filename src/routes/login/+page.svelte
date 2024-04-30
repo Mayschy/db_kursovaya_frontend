@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import { PrivateMarketplaceApi, authenticate } from '../../api/marketplaceApi';
-	import { is_successful } from '../../api/utils';
+	import { PrivateMarketplaceApi, authenticate } from '@/api/marketplaceApi';
 
 	let loginRequest = {
 		username: '',
 		password: ''
 	};
 
-	import { credentials } from '../../api/marketplaceApi';
+	import { credentials } from '@/api/marketplaceApi';
 	import { get } from 'svelte/store';
 
 	async function login() {

@@ -23,35 +23,14 @@
 	}
 
 	async function fetchCategories(name: string, page: number) {
-		// fetchedCategories = [
-		// 	{
-		// 		name: 'First category',
-		// 		parentCategory: undefined,
-		// 		subcategories: [],
-		// 		requiredProps: ['length', 'weight']
-		// 	},
-		// 	{
-		// 		name: 'First',
-		// 		parentCategory: undefined,
-		// 		subcategories: [],
-		// 		requiredProps: ['length', 'weight']
-		// 	},
-		// 	{
-		// 		name: 'Fir',
-		// 		parentCategory: undefined,
-		// 		subcategories: [],
-		// 		requiredProps: ['length', 'weight']
-		// 	}
-		// ];
-
 		const result = await PrivateMarketplaceApi.findCategory(name, page, DEFAULT_PAGE_SIZE);
-		fetchedCategories = result.data as ICategoryDto[];
+		fetchedCategories = result.data.content as ICategoryDto[];
 	}
 
 	let productRegister: IProductRegisterDto = {
 		caption: '',
 		categories: [],
-		characteristics: new Map<string, string>(),
+		characteristics: new Map(),
 		description: '',
 		price: 0,
 		images: []
@@ -77,7 +56,7 @@
 		</div>
 		<div class="mb-3">
 			<label for="productDescription" class="form-label">Description</label>
-			<textarea class="form-control" id="productDescription" rows="3" required></textarea>
+			<textarea bind:value={productRegister.description} class="form-control" id="productDescription" rows="3" required></textarea>
 		</div>
 
 		<div class="container-lg border border-5 p-3 rounded-4 shadow mb-3">
@@ -132,8 +111,9 @@
 							<p>{prop[0]}</p>
 							<input
 								type="text"
-								on:change={(event) => {
+								on:input={(event) => {
 									productRegister.characteristics.set(prop[0], event.currentTarget.value);
+									productRegister = productRegister;
 								}}
 							/>
 							<button
@@ -207,6 +187,7 @@
 		<button
 			on:click={() => {
 				console.log(productRegister);
+				registerProduct();
 			}}
 			class="btn btn-primary">Submit</button
 		>
