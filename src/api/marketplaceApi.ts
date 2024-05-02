@@ -4,7 +4,9 @@ import { is_successful } from "./utils"
 import { get } from "svelte/store"
 import { persisted } from 'svelte-persisted-store'
 
-const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080/v2"
+import fs from 'fs'
+
+export const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080/v2"
 
 const marketplaceClient = axios.create({
     baseURL: MARKET_PLACE_ENDPOINT,
@@ -17,6 +19,12 @@ export const credentials = persisted('credentials', {
 })
 
 export const DEFAULT_PAGE_SIZE = 15
+
+export interface IStoredFileDto {
+    id: string,
+    name: string,
+    owner: string
+}
 
 export interface ICategoryDto {
     name: string,
@@ -50,6 +58,7 @@ export interface IProductDto {
     characteristics: Map<string, string>,
     description: string,
     price: number,
+    actualPrice: number,
     rate: number,
     ordersCount: number,
     images: string[]
@@ -141,8 +150,12 @@ export class PrivateMarketplaceApi {
         })
     }
 
-    uploadFile(multipart: any) {
-        return this.authenticatedClient.post(`/file-storage/file`, { multipart }) // idk
+    uploadFile(form: FormData) { 
+        return this.authenticatedClient.post(`/file-storage/file`, form, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     }
 
     uploadFileByURL(filename: string, url: string) {

@@ -1,12 +1,13 @@
 <script lang="ts">
+	import ImagesUpload from '@/components/ImagesUpload.svelte';
 	import {
 		DEFAULT_PAGE_SIZE,
 		PrivateMarketplaceApi,
 		type ICategoryDto,
 		type IProductRegisterDto
-	} from '../../../api/marketplaceApi';
-	import { is_successful } from '../../../api/utils';
-	import DefaultCard from '../../../components/DefaultCard.svelte';
+	} from '@/api/marketplaceApi';
+	import { is_successful } from '@/api/utils';
+	import DefaultCard from '@/components/DefaultCard.svelte';
 
 	const privateApi = PrivateMarketplaceApi.fromLocalStorage();
 
@@ -56,7 +57,13 @@
 		</div>
 		<div class="mb-3">
 			<label for="productDescription" class="form-label">Description</label>
-			<textarea bind:value={productRegister.description} class="form-control" id="productDescription" rows="3" required></textarea>
+			<textarea
+				bind:value={productRegister.description}
+				class="form-control"
+				id="productDescription"
+				rows="3"
+				required
+			></textarea>
 		</div>
 
 		<div class="container-lg border border-5 p-3 rounded-4 shadow mb-3">
@@ -162,6 +169,12 @@
 						}}>Add</button
 					>
 				</div>
+				<ImagesUpload
+					onUpload={(url) => {
+						productRegister.images.push(url);
+						productRegister = productRegister;
+					}}
+				/>
 			</div>
 			<div class="list-group">
 				{#each productRegister.images as image}
