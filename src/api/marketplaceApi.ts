@@ -10,6 +10,10 @@ export const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080/v2"
 
 const marketplaceClient = axios.create({
     baseURL: MARKET_PLACE_ENDPOINT,
+    transformResponse: [function transformResponse(data, headers) {
+        // Optionally you can check the response headers['content-type'] for application/json or text/json
+        return JSON.parse(data);
+    }]
 })
 
 export const credentials = persisted('credentials', {
@@ -55,7 +59,7 @@ export interface IProductDto {
     id: string,
     caption: string,
     categories: string[],
-    characteristics: Map<string, string>,
+    characteristics: object,
     description: string,
     price: number,
     actualPrice: number,
@@ -150,7 +154,7 @@ export class PrivateMarketplaceApi {
         })
     }
 
-    uploadFile(form: FormData) { 
+    uploadFile(form: FormData) {
         return this.authenticatedClient.post(`/file-storage/file`, form, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -233,8 +237,16 @@ export class PrivateMarketplaceApi {
     /*
     * Products
     */
-    registerProduct(registerRequest: any) {
-        return this.authenticatedClient.post(`/marketplace/products/register`, registerRequest)
+    registerProduct(registerRequest: IProductRegisterDto) {
+        const request = {
+            caption: registerRequest.caption,
+            categories: registerRequest.categories,
+            characteristics: Object.fromEntries(registerRequest.characteristics),
+            description: registerRequest.description,
+            price: registerRequest.price,
+            images: registerRequest.images
+        }
+        return this.authenticatedClient.post(`/marketplace/products/register`, request)
     }
 
     deleteProduct(productId: string) {

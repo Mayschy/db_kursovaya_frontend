@@ -18,8 +18,9 @@
 
 	function addRequiredProps(category: ICategoryDto) {
 		category.requiredProps.forEach((prop) => {
-			if (!productRegister.characteristics.has(prop)) productRegister.characteristics.set(prop, '');
-			productRegister = productRegister;
+			if (!registerRequest.characteristics.has(prop))
+				registerRequest.characteristics.set(prop, 'unset');
+			registerRequest = registerRequest;
 		});
 	}
 
@@ -28,17 +29,17 @@
 		fetchedCategories = result.data.content as ICategoryDto[];
 	}
 
-	let productRegister: IProductRegisterDto = {
+	let registerRequest: IProductRegisterDto = {
 		caption: '',
 		categories: [],
-		characteristics: new Map(),
 		description: '',
 		price: 0,
-		images: []
+		images: [],
+		characteristics: new Map()
 	};
 
 	async function registerProduct() {
-		const result = await privateApi.registerProduct(productRegister);
+		const result = await privateApi.registerProduct(registerRequest);
 		if (is_successful(result.status)) alert('Product successfully registered!');
 		console.log(result.data);
 	}
@@ -49,16 +50,28 @@
 		<h2>Добавить Товар</h2>
 		<div class="mb-3">
 			<label for="productName" class="form-label">Product Name</label>
-			<input type="text" class="form-control" id="productName" required />
+			<input
+				type="text"
+				class="form-control"
+				id="productName"
+				bind:value={registerRequest.caption}
+				required
+			/>
 		</div>
 		<div class="mb-3">
 			<label for="productPrice" class="form-label">Product Price</label>
-			<input type="number" class="form-control" id="productPrice" required />
+			<input
+				type="number"
+				class="form-control"
+				id="productPrice"
+				bind:value={registerRequest.price}
+				required
+			/>
 		</div>
 		<div class="mb-3">
 			<label for="productDescription" class="form-label">Description</label>
 			<textarea
-				bind:value={productRegister.description}
+				bind:value={registerRequest.description}
 				class="form-control"
 				id="productDescription"
 				rows="3"
@@ -85,21 +98,21 @@
 
 			<div class="list-group">
 				{#each fetchedCategories as category}
-					{#if productRegister.categories.includes(category.name)}
+					{#if registerRequest.categories.includes(category.name)}
 						<button
 							class="btn btn-danger list-group-item"
 							on:click={() => {
-								const index = productRegister.categories.indexOf(category.name);
-								productRegister.categories.splice(index);
-								productRegister = productRegister;
+								const index = registerRequest.categories.indexOf(category.name);
+								registerRequest.categories.splice(index);
+								registerRequest = registerRequest;
 							}}>Remove {category.name}</button
 						>
 					{:else}
 						<button
 							class="btn btn-success list-group-item"
 							on:click={() => {
-								productRegister.categories.push(category.name);
-								productRegister = productRegister;
+								registerRequest.categories.push(category.name);
+								registerRequest = registerRequest;
 
 								addRequiredProps(category);
 							}}>Add {category.name}</button
@@ -108,25 +121,25 @@
 				{/each}
 			</div>
 		</div>
-		{#if productRegister.characteristics.size != 0}
+		{#if registerRequest.characteristics.size != 0}
 			<div class="container-lg border border-5 p-3 rounded-4 shadow mb-3">
 				<p>Edit product specs</p>
 
 				<div class="list-group">
-					{#each productRegister.characteristics as prop}
+					{#each registerRequest.characteristics as prop}
 						<div class="list-group-item">
 							<p>{prop[0]}</p>
 							<input
 								type="text"
 								on:input={(event) => {
-									productRegister.characteristics.set(prop[0], event.currentTarget.value);
-									productRegister = productRegister;
+									registerRequest.characteristics.set(prop[0], event.currentTarget.value);
+									registerRequest = registerRequest;
 								}}
 							/>
 							<button
 								on:click={() => {
-									productRegister.characteristics.delete(prop[0]);
-									productRegister = productRegister;
+									registerRequest.characteristics.delete(prop[0]);
+									registerRequest = registerRequest;
 								}}>X</button
 							>
 						</div>
@@ -144,8 +157,8 @@
 					<button
 						class="btn btn-primary"
 						on:click={() => {
-							productRegister.characteristics.set(newProp, '');
-							productRegister = productRegister;
+							registerRequest.characteristics.set(newProp, '');
+							registerRequest = registerRequest;
 						}}>Add</button
 					>
 				</div>
@@ -162,22 +175,22 @@
 					<button
 						class="btn btn-primary"
 						on:click={() => {
-							if (!productRegister.images.includes(newImage)) {
-								productRegister.images.push(newImage);
-								productRegister = productRegister;
+							if (!registerRequest.images.includes(newImage)) {
+								registerRequest.images.push(newImage);
+								registerRequest = registerRequest;
 							}
 						}}>Add</button
 					>
 				</div>
 				<ImagesUpload
 					onUpload={(url) => {
-						productRegister.images.push(url);
-						productRegister = productRegister;
+						registerRequest.images.push(url);
+						registerRequest = registerRequest;
 					}}
 				/>
 			</div>
 			<div class="list-group">
-				{#each productRegister.images as image}
+				{#each registerRequest.images as image}
 					<div class="list-group-item">
 						<div class="row">
 							<div class="col">
@@ -186,9 +199,9 @@
 							<div class="col">
 								<button
 									on:click={() => {
-										const index = productRegister.images.indexOf(image);
-										productRegister.images.splice(index);
-										productRegister = productRegister;
+										const index = registerRequest.images.indexOf(image);
+										registerRequest.images.splice(index);
+										registerRequest = registerRequest;
 									}}>X</button
 								>
 							</div>
@@ -199,7 +212,7 @@
 		</div>
 		<button
 			on:click={() => {
-				console.log(productRegister);
+				console.log(registerRequest);
 				registerProduct();
 			}}
 			class="btn btn-primary">Submit</button

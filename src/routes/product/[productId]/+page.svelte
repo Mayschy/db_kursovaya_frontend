@@ -9,23 +9,21 @@
 	const productId: string = $page.params.productId;
 
 	let product: IProductDto;
-	let comments: Array<ICommentDto>;
+	let comments: ICommentDto[] = [];
 
-	async function onload() {
-		try {
-			const productResult = await PrivateMarketplaceApi.getProduct(productId);
-			product = productResult.data as IProductDto;
-
-			const commentsResult = await PrivateMarketplaceApi.listComments(
-				productId,
-				0,
-				DEFAULT_PAGE_SIZE
-			);
-			comments = commentsResult.data as Array<ICommentDto>;
-		} catch {}
+	let commentRequest = {
+		productId: productId,
+		content: '',
+		rate: 0
+	};
+	async function loadData() {
+		product = (await PrivateMarketplaceApi.getProduct(productId)).data as IProductDto;
+		comments = (await PrivateMarketplaceApi.listComments(productId, 0, DEFAULT_PAGE_SIZE)).data
+			.content as ICommentDto[];
 	}
 
-	onload();
+	loadData();
+	let loadPromise = loadData();
 </script>
 
 <section>
@@ -37,21 +35,30 @@
 				{/each}
 			</div>
 			<div class="product-details">
-				<h1 class="product-title">{product.caption}</h1>
-				<p class="product-description">{product.description}</p>
+				<h1 class="product-title">Title: {product.caption}</h1>
+				<p class="product-description">Description: {product.description}</p>
 				<p class="product-price">${product.actualPrice}</p>
 				<p class="product-specs"><strong>Specifications:</strong></p>
 				<div>
-					{#each product.characteristics as spec}
+					{#each Object.entries(product.characteristics) as spec}
 						<p>{spec[0]} : {spec[1]}</p>
 					{/each}
 				</div>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 				<div class="comments">
 					<strong>Comments:</strong>
 					{#each comments as comment}
 						<p>{comment.content}</p>
 					{/each}
+					<div>
+						<label>Input comment:</label>
+						<input type="text" bind:value={commentRequest.content} />
+						<button
+							class="btn btn-success"
+							on:click={() => {
+								PrivateMarketplaceApi.fromLocalStorage().registerComment(commentRequest);
+							}}>Send comment</button
+						>
+					</div>
 				</div>
 			</div>
 		</div>

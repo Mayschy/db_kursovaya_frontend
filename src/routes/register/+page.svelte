@@ -1,5 +1,9 @@
 <script>
-	import { PrivateMarketplaceApi, PublicMarketplaceApi, authenticate } from '../../api/marketplaceApi';
+	import {
+		PrivateMarketplaceApi,
+		PublicMarketplaceApi,
+		authenticate
+	} from '../../api/marketplaceApi';
 	import { is_successful } from '../../api/utils';
 	const availableRoles = ['ADMIN', 'CUSTOMER'];
 
@@ -7,6 +11,7 @@
 	let emailToSendCode = '';
 
 	async function sendEmailCode() {
+		emailCodeSent = true;
 		const response = await PublicMarketplaceApi.sendEmailCode(emailToSendCode);
 		alert(response.status);
 		if (is_successful(response.status)) emailCodeSent = true;
@@ -24,10 +29,9 @@
 
 	async function register() {
 		const registerResult = await PublicMarketplaceApi.register(registerRequest);
-		if (is_successful(registerResult.status))
-		{
-			authenticate(registerRequest.username, registerRequest.password)
-			alert(`Logged in as ${registerRequest.username}`)
+		if (is_successful(registerResult.status)) {
+			authenticate(registerRequest.username, registerRequest.password);
+			alert(`Logged in as ${registerRequest.username}`);
 		}
 	}
 </script>
