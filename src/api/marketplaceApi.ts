@@ -6,14 +6,10 @@ import { persisted } from 'svelte-persisted-store'
 
 import fs from 'fs'
 
-export const MARKET_PLACE_ENDPOINT = "http://192.168.0.59:8080/v2"
+export const MARKET_PLACE_ENDPOINT = "http://localhost:8080/v2"
 
 const marketplaceClient = axios.create({
     baseURL: MARKET_PLACE_ENDPOINT,
-    transformResponse: [function transformResponse(data, headers) {
-        // Optionally you can check the response headers['content-type'] for application/json or text/json
-        return JSON.parse(data);
-    }]
 })
 
 export const credentials = persisted('credentials', {

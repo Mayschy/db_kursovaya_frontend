@@ -6,7 +6,7 @@
 		type ICommentDto,
 		type IProductDto
 	} from '@/api/marketplaceApi';
-	const productId: string = $page.params.productId;
+	const productId: string = $page.params.id;
 
 	let commentRequest = {
 		productId: productId,
