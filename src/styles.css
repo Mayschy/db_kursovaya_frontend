@@ -88,11 +88,13 @@ header {
 
 /*Оглавление слева */
 .sidebar {
-    width: 20%;
-    margin-left: 5%;
     height: 50vw;
     background-color: #e3f7e1;
     border-right: 1px solid #ccc;
+    top: 0;
+    left: 0;
+    position: fixed;
+    margin-top: 10vh;
 }
 
 .main-content {
