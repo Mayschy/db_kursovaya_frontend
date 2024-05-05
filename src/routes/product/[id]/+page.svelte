@@ -38,7 +38,12 @@
 				<div class="product-details">
 					<h1 class="product-title">Title: {product.caption}</h1>
 					<p class="product-description">Description: {product.description}</p>
-					<p class="product-price">${product.actualPrice}</p>
+					{#if product.price != product.actualPrice}
+						<p class="product-price">Price: ${product.price}</p>
+						<p class="product-price text-success">Current price: ${product.actualPrice}</p>
+					{:else}
+						<p class="product-price">Price: ${product.actualPrice}</p>
+					{/if}
 					<p class="product-specs"><strong>Specifications:</strong></p>
 					<div class="border rounded-4 shadow-lg pt-3 ps-3">
 						{#each Object.entries(product.characteristics) as spec}
