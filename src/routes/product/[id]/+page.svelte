@@ -36,7 +36,7 @@
 					{/each}
 				</div>
 				<div class="product-details">
-					<h1 class="product-title">Title: {product.caption}</h1>
+					<h2 class="product-title">{product.caption}</h2>
 					<p class="product-description">Description: {product.description}</p>
 					{#if product.price != product.actualPrice}
 						<p class="product-price">Price: ${product.price}</p>
