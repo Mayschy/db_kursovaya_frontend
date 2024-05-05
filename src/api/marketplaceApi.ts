@@ -301,6 +301,15 @@ export class PrivateMarketplaceApi {
         })
     }
 
+    static findDiscounts(query: string, page: number, pageSize: number) {
+        return marketplaceClient.get(`/marketplace/discounts/${query}`, {
+            params: {
+                "page": page,
+                "pageSize": pageSize
+            }
+        })
+    }
+
     /*
     * Orders
     */

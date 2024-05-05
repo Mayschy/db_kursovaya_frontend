@@ -4,6 +4,8 @@
 
 	let clazz = '';
 	export { clazz as class };
+
+	export let btnText: string = 'Select'
 </script>
 
 <section class={clazz}>
@@ -16,7 +18,7 @@
 				class="btn btn-primary"
 				on:click={() => {
 					handler(item);
-				}}>Select</button
+				}}>{btnText}</button
 			>
 		</div>
 	</div>
