@@ -53,10 +53,12 @@
 					<div class="comments">
 						<strong>Comments:</strong>
 						{#each comments as comment}
-							<div>
-								<p>{comment.ownerId}</p>
-								<p>{comment.content}</p>
-								<p>Rate: {comment.rate} / 5</p>
+							<div class="border rounded-4 shadow-lg pt-3 ps-3 pb-3">
+								<div class="border rounded-3 pb-1 pt-2 ps-2">
+									<b>{comment.ownerId}:</b><br/>
+									{comment.content}<br/>
+									Rate: {comment.rate} / 5
+								</div>
 							</div>
 						{/each}
 						<div>
